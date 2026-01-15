@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# 1. Check if a file was provided
+if [ $# -eq 0 ]; then
+    echo "Usage: ./run_verilog.sh [testbench_file_tb.v] [optional_other_files.v]"
+    exit 1
+fi
+
+# Variables
+TESTBENCH=$1
+
+# ---------------------------------------------------------
+# NEW: Check if the file ends in "_tb.v"
+# ---------------------------------------------------------
+if [[ "$TESTBENCH" != *"_tb.v" ]]; then
+    echo "⛔ ERROR: The input file '$TESTBENCH' is not a valid testbench."
+    echo "   To prevent accidental simulation of design modules,"
+    echo "   this script only accepts files ending in '_tb.v'."
+    exit 1
+fi
+
+BASENAME=$(basename "$TESTBENCH" .v)
+SIMFILE="../sim/${BASENAME}.vvp"
+
+echo "----------------------------------------"
+echo "1. Compiling with iverilog..."
+# Compiles all input files ($@) into the .vvp file
+iverilog -o "$SIMFILE" "$@"
+
+# Check if compilation was successful
+if [ $? -ne 0 ]; then
+    echo "❌ Compilation failed."
+    exit 1
+else
+    echo "✅ Compilation successful. Output: $SIMFILE"
+fi
+
+echo "----------------------------------------"
+echo "2. Running simulation with vvp..."
+# Run the simulation
+vvp "$SIMFILE"
+
+# Check if simulation ran successfully
+if [ $? -ne 0 ]; then
+    echo "❌ Simulation failed."
+    exit 1
+else
+    echo "✅ Simulation completed."
+fi
+
+echo "----------------------------------------"
+echo "3. Opening waveform..."
+
+# Attempt to find the VCD filename defined in the testbench using awk
+VCD_FILE=$(awk -F\" '/\$dumpfile/ {print $2}' "$TESTBENCH")
+
+if [ -z "$VCD_FILE" ]; then
+    echo "⚠️  No \$dumpfile found in $TESTBENCH."
+    echo "   Opening GTKWave without a file..."
+    gtkwave &
+else
+    if [ -f "$VCD_FILE" ]; then
+        echo "✅ Found VCD file: $VCD_FILE"
+        echo "   Opening GTKWave..."
+        gtkwave "../sim/$VCD_FILE" &
+    else
+        echo "❌ The file $VCD_FILE was defined but not generated."
+        echo "   Did you include \$dumpvars; in your testbench?"
+    fi
+fi
