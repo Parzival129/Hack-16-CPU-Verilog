@@ -5,25 +5,37 @@
 
 A modular, single-cycle 16-bit RISC processor implemented in Verilog HDL, based off the Hack architecture. This project demonstrates the fundamental principles of computer architecture, including instruction decoding, ALU operations, and memory management.
 
+## Design Process
+
+You can find a document of some of my notes during the design of this CPU here: [Google Drive](https://drive.google.com/file/d/1Qx1WprU1iW-c92LSJh5ZjYJF1c26F71X/view?usp=sharing).
+My primary resource was the book *The Elements of Computing Systems: Building a Modern Computer from First Principles by Noam Nisan and Shimon Schocken*, to see the steps I took for the design I would recommend looking there: [nand2tetris website](https://www.nand2tetris.org/)
+
 ![CPU Specification](assets/cpu_specification.png)
 
 ## 📌 Features
-- **16-bit Data Path:** Processes data in 16-bit widths.
-- **Instruction Set Architecture (ISA):** HACK architecture, ISA supporting Arithmetic, Logic, and Control Flow instructions.
-- **Modular Design:** Separate modules for ALU, Control Unit, Register File, and Program Counter.
-- **Memory Mapping:** Supports [Harvard/Von Neumann] architecture with integrated Instruction and Data memory.
-- **Simulation Ready:** Includes testbenches for verifying each module and the full system.
+
+* **16-bit Fixed-Width Design:** Operates on 16-bit data words and instructions throughout the entire datapath.
+* **Hack ISA Implementation:** Full support for **A-instructions** (set A register) and **C-instructions** (computation/jump).
+* **Unified ALU & Control Logic:** A hardwired control unit that decodes 16-bit instructions to drive the Hack ALU and register gates.
+* **Harvard Architecture:** Dedicated interfaces for the **Instruction Memory (ROM)** and **Data Memory (RAM)**, allowing simultaneous instruction fetching and data access.
+* **HDL Verified:** Built using Hardware Description Language (HDL) and validated against the standard *Nand2Tetris* test scripts (`CPU.tst`).
+
+---
 
 ## Architecture Overview
-The CPU follows a [Single-Cycle / Pipelined] architecture.
+
+The CPU follows a **Single-Cycle architecture**, executing one instruction per clock pulse by coordinating the ALU, registers, and program counter.
 
 ### Key Components:
-1. **Program Counter (PC):** Handles the address of the next instruction.
-2. **Instruction Memory:** Stores the program binary (16-bit instructions).
-3. **Register File:** Contains 2 general-purpose 16-bit registers (A and D).
-4. **ALU (Arithmetic Logic Unit):** Performs operations like `ADD`, `SUB`, `AND`, `OR`, `XOR`, and `SHIFTS`.
-5. **Control Unit:** Decodes opcodes and generates control signals for the datapath.
-6. **Data Memory:** 16-bit addressable RAM for load/store operations.
+
+1. **Program Counter (PC):** A 16-bit register with reset, load, and increment logic to fetch the next instruction from ROM32K.
+2. **Registers (A, D, and M):**
+* **A-Register:** Stores either a 15-bit address or a 16-bit data constant.
+* **D-Register:** A dedicated 16-bit data register for storing intermediate computation results.
+* **M-Register:** A "virtual" register representing the RAM value at the current address held by the A-register.
+3. **Hack ALU:** Processes two 16-bit inputs (D and either A or M) to produce 18 possible functions including `ADD`, `AND`, `NOT`, and bitwise negation.
+4. **Control Unit:** Decodes the 16-bit C-instruction to set the `a`, `c`, `d`, and `j` bits, managing routing and write-enable signals.
+5. **Memory Mapping:** Directly interfaces with 16-bit addressable RAM and Memory-Mapped I/O for the Screen and Keyboard.
 
 ---
 
@@ -46,7 +58,7 @@ Each instruction is 16 bits wide. Below is the encoding format:
    git clone https://github.com/Parzival129/16-Bit-Verilog-CPU.git
    cd 16-Bit-Verilog-CPU
 
-2. **Compile and test top module with vsim script**
+2. **Compile and test top module with my vsim script**
 
 ```bash
 vsim ../tb/top_module_tb.v
