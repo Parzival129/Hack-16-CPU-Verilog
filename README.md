@@ -14,7 +14,7 @@ A modular, single-cycle 16-bit RISC processor implemented in Verilog HDL, based 
 - **Memory Mapping:** Supports [Harvard/Von Neumann] architecture with integrated Instruction and Data memory.
 - **Simulation Ready:** Includes testbenches for verifying each module and the full system.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 The CPU follows a [Single-Cycle / Pipelined] architecture.
 
 ### Key Components:
@@ -34,7 +34,7 @@ Each instruction is 16 bits wide. Below is the encoding format:
 
 ---
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 - **Simulation:** [Icarus Verilog](http://iverilog.icarus.com/) or **Vivado** / **ModelSim**.
@@ -43,44 +43,21 @@ Each instruction is 16 bits wide. Below is the encoding format:
 ### Running the Simulation
 1. **Clone the repo:**
    ```bash
-   git clone [https://github.com/Parzival129/16-Bit-Verilog-CPU.git](https://github.com/Parzival129/16-Bit-Verilog-CPU.git)
+   git clone https://github.com/Parzival129/16-Bit-Verilog-CPU.git
    cd 16-Bit-Verilog-CPU
 
-```
+2. **Compile and test top module with vsim script**
 
-2. **Compile with Icarus Verilog:**
 ```bash
-iverilog -o cpu_sim cpu_tb.v cpu.v alu.v control_unit.v register_file.v
-
+vsim ../tb/top_module_tb.v
 ```
-
-
-3. **Run the simulation:**
+or for testing any other module with a testbenchh
 ```bash
-vvp cpu_sim
-
+vsim ../tb/[testbench file]
 ```
-
-
-4. **View Waveforms:**
-```bash
-gtkwave dump.vcd
-
-```
-
-
 
 ---
 
-## 📊 Performance & Testing
-
-The CPU has been verified using a comprehensive test suite (`cpu_tb.v`) that checks:
-
-* [ ] Arithmetic correctness (Overflow/Carry).
-* [ ] Branching logic (Taken vs. Not Taken).
-* [ ] Memory read/write consistency.
-
----
 
 ## 🗺️ Roadmap
 
