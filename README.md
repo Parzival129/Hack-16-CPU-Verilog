@@ -1,4 +1,4 @@
-# 16-Bit Verilog CPU
+# 16-Bit HACK CPU
 ![Verilog](https://img.shields.io/badge/Language-Verilog-orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)
