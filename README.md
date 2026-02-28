@@ -20,7 +20,7 @@ The CPU follows a [Single-Cycle / Pipelined] architecture.
 ### Key Components:
 1. **Program Counter (PC):** Handles the address of the next instruction.
 2. **Instruction Memory:** Stores the program binary (16-bit instructions).
-3. **Register File:** Contains [Number, e.g., 8 or 16] general-purpose 16-bit registers.
+3. **Register File:** Contains 2 general-purpose 16-bit registers (A and D).
 4. **ALU (Arithmetic Logic Unit):** Performs operations like `ADD`, `SUB`, `AND`, `OR`, `XOR`, and `SHIFTS`.
 5. **Control Unit:** Decodes opcodes and generates control signals for the datapath.
 6. **Data Memory:** 16-bit addressable RAM for load/store operations.
